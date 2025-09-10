@@ -1,0 +1,26 @@
+1.analizar
+2.planeacion
+3.diseño
+4.desarrollo
+5.tester o pruebas
+6.despliegue o montar la pagina al usuario
+7.mantenimiento
+
+
+SRUM PROCESS
+
+el product owner es el que lleva la idea de lo que se va ha crear.
+
+el scrum master es la persona que esta acargo de llevar acabo el proyecto en repartir como los roles acada desarrollador y que se cumpla perfectamente.
+
+
+epica
+R/ es el proyecto como tal
+
+
+feacture 
+R/ las cuales se van a repartir para realizar el proyecto si dos feacture para realizar uno el back y otro el front
+
+
+historia de usuario
+R/
