@@ -1,0 +1,16 @@
+﻿nombre_finca,region,es_organico,id_tipo_suelo,id_sistema_riego
+Finca_1,Tolima,Yes,1,1
+Finca_2,Cundinamarca,No,2,2
+Finca_3,Tolima,No,3,3
+Finca_4,Santander,Yes,4,1
+Finca_5,Huila,Yes,5,2
+Finca_1,Cundinamarca,Yes,1,3
+Finca_2,Santander,No,2,1
+Finca_3,Cundinamarca,Yes,3,2
+Finca_4,Huila,No,4,3
+Finca_5,Cundinamarca,Yes,5,1
+Finca_1,Tolima,Yes,1,2
+Finca_2,Antioquia,Yes,2,3
+Finca_3,Huila,No,3,1
+Finca_4,Huila,No,4,2
+Finca_5,Antioquia,No,5,3
