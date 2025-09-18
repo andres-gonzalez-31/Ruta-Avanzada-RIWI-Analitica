@@ -1,5 +1,5 @@
-﻿Nombre_Tipo_Sensor
-Rainfall
-Temperature
-Humidity
-pH
+﻿Id_Tipo_Sensor,Nombre_Tipo_Sensor
+1,Rainfall
+2,Temperature
+3,Humidity
+4,pH

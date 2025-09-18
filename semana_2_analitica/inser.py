@@ -1,83 +1,63 @@
-import os
-import pandas as pd
+import csv
 import psycopg2
+import os
 
-# 📌 Configuración de conexión a PostgreSQL
-def get_connection():
+# Obtiene la ruta absoluta de donde está este script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CARPETA_CSV = os.path.join(BASE_DIR, "agrovida_csvs")  # <<--- carpeta donde están los CSV
+
+# Conexión a la base de datos
+def get_db_connection():
     return psycopg2.connect(
-        host="localhost",
-        user="postgres",
-        password="Andy310823*",
-        dbname="agrovida"
+        host='localhost',
+        database='agrovida',
+        user='postgres',
+        password='Andy310823*'
     )
 
-# 📁 Carpeta donde están los CSV
-csv_folder = "agrovida_csvs"
+def insertar_csv_en_tabla(nombre_csv, nombre_tabla, columnas):
+    ruta_csv = os.path.join(CARPETA_CSV, nombre_csv)  # <<--- ahora busca en agrovida_csvs
 
-# ⚡ Orden correcto de inserción según dependencias
-orden_tablas = [
-    "tipo_suelo",
-    "sistema_riego",
-    "tipo_sensor",
-    "cultivo",
-    "tecnico",
-    "finca",
-    "variedad_cultivo",
-    "sensor",
-    "medicion",
-    "finca_cultivo",
-    "asignacion_tecnico",
-    "fertilizacion"
-]
+    if not os.path.exists(ruta_csv):
+        print(f"⚠️ No se encontró el archivo: {ruta_csv}")
+        return
+
+    with open(ruta_csv, newline='', encoding='utf-8') as f:
+        lector = csv.reader(f)
+        next(lector)  # Saltar encabezado
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        for fila in lector:
+            if not any(fila) or any(c.strip().lower() == 'nan' for c in fila):
+                continue
+
+            placeholders = ', '.join(['%s'] * len(fila))
+            columnas_str = ', '.join(columnas)
+            consulta = f'INSERT INTO {nombre_tabla} ({columnas_str}) VALUES ({placeholders}) ON CONFLICT DO NOTHING'
+            cur.execute(consulta, fila)
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        print(f"✅ Insertados {lector.line_num - 1} registros en la tabla '{nombre_tabla}'")
 
 def insertar_csvs():
-    conn = get_connection()
-    cur = conn.cursor()
-
-    for tabla in orden_tablas:
-        filename = f"{tabla}.csv"
-        ruta = os.path.join(csv_folder, filename)
-
-        if not os.path.exists(ruta):
-            print(f"⚠️ No existe el archivo: {filename}")
-            continue
-
-        # ⚠️ Vaciar la tabla antes de insertar (elimina sus datos previos)
-        cur.execute(f'TRUNCATE TABLE "{tabla}" RESTART IDENTITY CASCADE')
-        conn.commit()
-
-        # 📥 Leer CSV
-        df = pd.read_csv(ruta)
-
-        # 🧹 Quitar filas completamente vacías
-        df = df.dropna(how='all')
-
-        # 🗑️ Eliminar columnas ID autogeneradas si existen
-        id_cols = [c for c in df.columns if c.startswith("id_")]
-        if id_cols:
-            df = df.drop(columns=id_cols)
-
-        # Reemplazar NaN por None (NULL)
-        df = df.where(pd.notnull(df), None)
-
-        # ⚠️ Si después de limpiar no quedan filas, saltar esta tabla
-        if df.empty:
-            print(f"⚠️ El archivo {filename} no tiene filas válidas, se omite.")
-            continue
-
-        columnas = ", ".join(df.columns)
-        placeholders = ", ".join(["%s"] * len(df.columns))
-        sql = f'INSERT INTO "{tabla}" ({columnas}) VALUES ({placeholders})'
-
-        # Insertar fila por fila
-        for fila in df.itertuples(index=False, name=None):
-            cur.execute(sql, fila)
-
-        conn.commit()
-        print(f"✅ Insertados {len(df)} registros en la tabla '{tabla}'")
-
-    cur.close()
-    conn.close()
+    insertar_csv_en_tabla('tipo_suelo.csv', 'tipo_suelo', ['nombre_tipo_suelo'])
+    insertar_csv_en_tabla('sistema_riego.csv', 'sistema_riego', ['nombre_sistema_riego'])
+    insertar_csv_en_tabla('tipo_sensor.csv', 'tipo_sensor', ['nombre_tipo_sensor'])
+    insertar_csv_en_tabla('cultivo.csv', 'cultivo', ['tipo_cultivo'])
+    insertar_csv_en_tabla('unidad_medida.csv', 'unidad_medida', ['nombre'])
+    insertar_csv_en_tabla('tecnico.csv', 'tecnico', ['nombre_tecnico'])
+    insertar_csv_en_tabla('finca.csv', 'finca', ['nombre_finca','region','es_organico','id_tipo_suelo','id_sistema_riego'])
+    insertar_csv_en_tabla('variedad_cultivo.csv', 'variedad_cultivo', ['nombre_variedad','id_cultivo'])
+    insertar_csv_en_tabla('sensor.csv', 'sensor', ['id_sensor','estado_sensor','fecha_mantenimiento','id_finca','id_tipo_sensor'])
+    insertar_csv_en_tabla('medicion.csv', 'medicion', ['id_sensor','valor','fecha_hora'])
+    insertar_csv_en_tabla('finca_cultivo.csv', 'finca_cultivo', ['id_finca','id_variedad','produccion_toneladas'])
+    insertar_csv_en_tabla('asignacion_tecnico.csv', 'asignacion_tecnico', ['id_finca','id_tecnico','fecha_inicio','fecha_fin'])
+    insertar_csv_en_tabla('fertilizacion.csv', 'fertilizacion', ['id_finca','fertilizante_usado','fecha_aplicacion'])
 
 if __name__ == "__main__":
     insertar_csvs()

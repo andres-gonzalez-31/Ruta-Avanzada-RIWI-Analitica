@@ -1,6 +1,6 @@
-﻿Nombre_Tipo_Suelo
-Sandy
-Clay
-Loam
-Silt
-Peaty
+﻿Id_Tipo_Suelo,Nombre_Tipo_Suelo
+1,Sandy
+2,Clay
+3,Loam
+4,Silt
+5,Peaty

@@ -1,5 +1,5 @@
-﻿Tipo_Cultivo
-Banana
-Corn
-Coffee
-Cocoa
+﻿Id_Cultivo,Tipo_Cultivo
+1,Banana
+2,Corn
+3,Coffee
+4,Cocoa

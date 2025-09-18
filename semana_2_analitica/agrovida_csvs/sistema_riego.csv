@@ -1,4 +1,4 @@
-﻿nombre_sistema_riego
-Sprinkler
-None
-Drip
+﻿Id_Sistema_Riego,Nombre_Sistema_Riego
+1,Sprinkler
+2,None
+3,Drip

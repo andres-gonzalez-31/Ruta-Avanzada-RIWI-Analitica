@@ -1,6 +1,6 @@
-﻿Nombre_Variedad,Id_Cultivo
-Hass,4
-Valery,1
-Criollo,4
-Caturra,3
-Tuxpeño,2
+﻿Id_Variedad,Nombre_Variedad,Id_Cultivo
+1,Hass,4
+2,Valery,1
+3,Criollo,4
+4,Caturra,3
+5,Tuxpeño,2
