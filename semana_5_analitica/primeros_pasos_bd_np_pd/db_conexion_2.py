@@ -2,13 +2,13 @@ from sqlalchemy import create_engine
 import pandas as pd
 from faker import Faker
 
-# 1️⃣ Conexión con la base de datos PostgreSQL
+#  Conexión con la base de datos PostgreSQL
 engine = create_engine('postgresql+psycopg2://postgres:Andy310823*@localhost:5432/ejercicios_numpy_pandas')
 
-# 2️⃣ Inicializar Faker
+# 2Inicializar Faker
 fake = Faker()
 
-# 3️⃣ Generar 1000 filas de datos falsos
+# 3Generar 1000 filas de datos falsos
 data = []
 for _ in range(1000):
     data.append({
